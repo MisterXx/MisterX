@@ -19,7 +19,7 @@
   </extension>
 </addon>
 
-<addon id="repository.MisterX" name="MisterX Repository" version="1.0.3" provider-name="MisterX">
+<addon id="repository.MisterX" name="MisterX Repository" version="1.0.4" provider-name="MisterX">
 	<extension point="xbmc.addon.repository" name="MisterX addon repository">
 		<info compressed="false">http://github.com/MisterXx/MisterX/raw/master/addons.xml</info>
 		<checksum>http://github.com/MisterXx/MisterX/raw/master/addons.xml.md5</checksum>
