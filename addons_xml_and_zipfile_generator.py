@@ -43,15 +43,10 @@ class Generator:
         self._generate_md5_file()
         self._generate_zip_files()
         # notify user
-        print "Finished updating addons xml and md5 files"
-
-
-
-
+        print "Finished updating addons xml, md5 files and zipping addons"
 
     def _generate_zip_files ( self ):
         addons = os.listdir( "." )
-
         # loop thru and add each addons addon.xml file
         for addon in addons:
             try:
@@ -61,29 +56,25 @@ class Generator:
                 _path = os.path.join( addon, "addon.xml" )
                 # split lines for stripping
                 document = minidom.parse(_path)
-
                 for parent in document.getElementsByTagName("addon"):
                     version = parent.getAttribute("version")
-                    
                 self._generate_zip_file(addon, version)
-
             except Exception, e:
                 print e
 
     def _generate_zip_file ( self, path, version ):
-
         filename = path + "-" + version + ".zip"
-
-        
-        zip = zipfile.ZipFile(filename, 'w')
-
-        for root, dirs, files in os.walk(path + "\\"):
-            for file in files:
-                zip.write(os.path.join(root, file))
-        zip.close()
-        os.rename(zippath + "\\" + filename, zippath + "\\" + filename + "." + datetime.datetime.now().strftime("%Y%m%d%H%M%S") )
-        shutil.move(filename, zippath + "\\")
-
+        try:
+            zip = zipfile.ZipFile(filename, 'w')
+            for root, dirs, files in os.walk(path + "\\"):
+                for file in files:
+                    zip.write(os.path.join(root, file))
+            zip.close()
+            if os.path.isfile(zippath + "\\" + filename):
+                os.rename(zippath + "\\" + filename, zippath + "\\" + filename + "." + datetime.datetime.now().strftime("%Y%m%d%H%M%S") )
+            shutil.move(filename, zippath + "\\")
+        except Exception, e:
+            print e
 
     def _generate_addons_file( self ):
         # addon list
