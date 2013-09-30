@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.MisterX" name="MisterX repository" version="1.0" provider-name="MisterX">
 	<extension point="xbmc.addon.repository" name="MisterX Addon Repository">
-		<info compressed="false">http://dl.dropbox.com/u/219436629/My-Repo/addons.xml</info>
-		<checksum>http://dl.dropbox.com/u/219436629/My-Repo/addons.xml.md5</checksum>
-		<datadir zip="true">http://dl.dropbox.com/u/219436629/My-Repo/zips</datadir>
+		<info compressed="false">https://github.com/MisterXx/MisterX/blob/master/addons.xml</info>
+		<checksum>https://github.com/MisterXx/MisterX/blob/master/addons.xml.md5</checksum>
+		<datadir zip="true">https://github.com/MisterXx/MisterX/tree/master/zips</datadir>
 	</extension>
 	<extension point="xbmc.addon.metadata">
-		<summary>MisterX addons</summary>
-		<description>Download and install addons from MisterX.......For OFFICIAL Support Visit XBMCHUB.COM</description>
+		<summary lang="en">MisterX Addon Repository</summary>
+		<description lang="en">All addons, developed by MisterX - For OFFICIAL support visit XBMCHUB.COM</description>
 		<platform>all</platform>
 	</extension>
 </addon>
