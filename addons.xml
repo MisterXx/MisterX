@@ -14,6 +14,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">beeg.com (Adult)</summary>
     <description lang="en">beeg.com (Adult)- Powered by XBMCHUB.COM</description>
+	<license>GPL 3.0</license>
     <platform>all</platform>
   </extension>
 </addon>
