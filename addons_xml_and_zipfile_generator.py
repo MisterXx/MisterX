@@ -58,11 +58,12 @@ class Generator:
                 document = minidom.parse(_path)
                 for parent in document.getElementsByTagName("addon"):
                     version = parent.getAttribute("version")
-                self._generate_zip_file(addon, version)
+                    addonid = parent.getAttribute("id")
+                self._generate_zip_file(addon, version, addonid)
             except Exception, e:
                 print e
 
-    def _generate_zip_file ( self, path, version ):
+    def _generate_zip_file ( self, path, version, addonid):
         filename = path + "-" + version + ".zip"
         try:
             zip = zipfile.ZipFile(filename, 'w')
@@ -70,9 +71,9 @@ class Generator:
                 for file in files:
                     zip.write(os.path.join(root, file))
             zip.close()
-            if os.path.isfile(zippath + "\\" + filename):
-                os.rename(zippath + "\\" + filename, zippath + "\\" + filename + "." + datetime.datetime.now().strftime("%Y%m%d%H%M%S") )
-            shutil.move(filename, zippath + "\\")
+            if os.path.isfile(zippath + "\\" + addonid + "\\" + filename):
+                os.rename(zippath + "\\" + addonid + "\\" + filename, zippath + "\\" + addonid + "\\" + filename + "." + datetime.datetime.now().strftime("%Y%m%d%H%M%S") )
+            shutil.move(filename, zippath + "\\" + addonid + "\\")
         except Exception, e:
             print e
 
