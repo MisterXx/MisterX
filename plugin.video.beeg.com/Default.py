@@ -14,15 +14,42 @@
 #    along with this program.  If not, see [http://www.gnu.org/licenses/].
 
 
-import urllib,urllib2,re
-#import sys
+import urllib,urllib2,re, os
 import xbmcplugin,xbmcgui
+
+NAME = 'beeg.com plugin'
+
+class switch(object):
+    def __init__(self, value):
+        self.value = value
+        self.fall = False
+
+    def __iter__(self):
+        """Return the match method once, then stop"""
+        yield self.match
+        raise StopIteration
+    
+    def match(self, *args):
+        """Indicate whether or not to enter a case suite"""
+        if self.fall or not args:
+            return True
+        elif self.value in args:
+            self.fall = True
+            return True
+        else:
+            return False
+
 
 
 def CATEGORIES():
-		addDir('Most Recent', 'http://beeg.com/section/home/1/', 'getIndex', '', '1')
-		addDir('Categories', 'http://beeg.com/section/home/1/', 'getSiteCategories', '', '1')
-		#addDir('College Rules', 'http://beeg.com/search?q=College+Rules', 'getIndex', '', '1')
+        addDir('Most Recent', 'http://beeg.com/section/home/1/', 'getIndex', '', '1')
+        addDir('Categories', 'http://beeg.com/section/home/1/', 'getSiteCategories', '', '1')
+        addDir('Long Videos', 'http://beeg.com/section/long-videos/1/', 'getIndex', '', '1')
+        addDir('Search', 'http://beeg.com/search?q=', 'getSearch', '', '1')
+        
+        
+        
+        
 
 def SITE_CATEGORIES():
 		addDir('18', 'http://beeg.com/tag/18/1/', 'getIndex', '', '1')
@@ -331,51 +358,84 @@ def SITE_CATEGORIES():
 		addDir('Young & old', 'http://beeg.com/tag/young+old/1/', 'getIndex', '', '1')
 		addDir('Young couple', 'http://beeg.com/tag/young+couple/1/', 'getIndex', '', '1')
 
-
+def SEARCH(url):
+        input = ''
+        keyboard = xbmc.Keyboard(input, 'Search clip')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            input = keyboard.getText().replace(' ','+')            
+            if input == None:
+                return False
+        if not re.match('[A-Za-z0-9 ]', input):     # this part doesn't work for some reason...
+            d = xbmcgui.Dialog()
+            d.ok(NAME, 'Please use only alphanumeric values')  
+            CATEGORIES()
+            return False
+        INDEX(url + input, 1)
 
 
 def INDEX(url,page):
-		# Grabbing the URL
-		req = urllib2.Request(url)
-		req.add_header('User-Agent', 'Mozilla/5.0 (iPad; U; CPU OS OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.10')
-		response = urllib2.urlopen(req)
-		link = response.read()
-		response.close()
+        # Grabbing the URL
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (iPad; U; CPU OS OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.10')
+        response = urllib2.urlopen(req)
+        link = response.read()
+        response.close()
 		
-		# Getting all the data from the url
-		IDString = re.compile('var tumbid  =\[(.+?)\];').findall(link)
-		NamesString = re.compile('var tumbalt =\[(.+?)\];').findall(link)
-		PageNumbersNormal = re.compile('<a href="/section/home/(.+?)/" target="_self">').findall(link)
-		PageNumbersTags = re.compile('<a href="/tag/(.+?)/(.+?)/" target="_self">').findall(link)
-	
-		# Processing data into usable data
-		AllIDs = re.split('\,+', IDString[0])
-		NamesString[0] = NamesString[0].lstrip('\'')
-		NamesString[0] = NamesString[0].rstrip('\'')
-		AllNames = re.split('\'\,\'+', NamesString[0])
-		url = re.sub('[0-9]+/$', '', url)
-		
-		PageNumbers = 1
-		
-		# Page stuff
-		if PageNumbersNormal:
-			PageNumbers = PageNumbersNormal[-1]
-		elif PageNumbersTags:
-			PageNumbers = PageNumbersTags[-1][-1]
-		page=int(page)
-		#if page > 1:
-		#	addDir('Previous page (' + str(page-1) + ')', url + str(page-1) + '/', 'getIndex', '', str(page-1))
-		if page < int(PageNumbers):
-			addDir('Next page (' + str(page+1) + ')', url + str(page+1) + '/', 'getIndex', '', str(page+1))
+        # Getting all the data from the url
+        IDString = re.compile('var tumbid  =\[(.+?)\];').findall(link)
+        NamesString = re.compile('var tumbalt =\[(.+?)\];').findall(link)
 
-		# Content loop
-		for number, name in zip(AllIDs, AllNames):
-			addDownLink(name,number,'getVideo','http://cdn.anythumb.com/236x177/' + number + '.jpg')
+    
+        # Processing data into usable data
+        AllIDs = re.split('\,+', IDString[0])
+        NamesString[0] = NamesString[0].lstrip('\'')
+        NamesString[0] = NamesString[0].rstrip('\'')
+        AllNames = re.split('\'\,\'+', NamesString[0])
 
+
+        DIRPAGER(url, link, page)
+        
+        # Content loop
+        for number, name in zip(AllIDs, AllNames):
+            addDownLink(name,number,'getVideo','http://cdn.anythumb.com/236x177/' + number + '.jpg')
+
+        DIRPAGER(url, link, page)
+ 
+def DIRPAGER(url, link, page):
+
+        PageNumbersNormal = re.compile('<a href="/section/(.+?)/([0-9]+)/" target="_self">').findall(link)
+        PageNumbersTags = re.compile('<a href="/tag/(.+?)/([0-9]+)/" target="_self">').findall(link)
+        PageNumbersSearch = re.compile('<a href="/search\?q=([0-9a-zA-Z ]+)\&page=([0-9]+)" target="_self">').findall(link)
+        
+        page = int(page)
+        PageNumbers = 1
+        # Page stuff
+        if PageNumbersSearch:
+            PageNumbers = PageNumbersSearch[-1][-1]
+            url = re.sub('[0-9]+$', '', url)
+            if page <= 1:
+                url = url + '&page='
+            if page < int(PageNumbers):
+                addDir('Next page (' + str(page+1) + ')', url + str(page+1), 'getIndex', '', str(page+1))
+                return False
+            return False
+        elif PageNumbersNormal:
+            PageNumbers = PageNumbersNormal[-1][-1]
+            url = re.sub('[0-9]+/$', '', url)
+        elif PageNumbersTags:
+            PageNumbers = PageNumbersTags[-1][-1]
+            url = re.sub('[0-9]+/$', '', url)
+            
+        print(PageNumbers)
+        if page < int(PageNumbers):
+            addDir('Next page (' + str(page+1) + ')', url + str(page+1) + '/', 'getIndex', '', str(page+1))
+
+            
 def VIDEOLINKS(url,name):
-		listitem = xbmcgui.ListItem(name)
-		listitem.setInfo('video', {'Title': name, 'Genre': 'Porn'})
-		xbmc.Player().play('http://video.mystreamservice.com/480p/'+url+'.mp4', listitem)
+        listitem = xbmcgui.ListItem(name)
+        listitem.setInfo('video', {'Title': name, 'Genre': 'Porn'})
+        xbmc.Player().play('http://video.mystreamservice.com/480p/'+url+'.mp4', listitem)
 
 def get_params():
         param=[]
@@ -416,63 +476,62 @@ def addDir(name,url,mode,iconimage,page):
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 
-		
-params=get_params()
-url=None
-name=None
-mode=None
-page=None
 
-# Populate url, name & mode vars, if not, take default "None"
-try:
-        url=urllib.unquote_plus(params["url"])
-except:
-        pass
-try:
-        name=urllib.unquote_plus(params["name"])
-except:
-        pass
-try:
-        mode=urllib.unquote_plus(params["mode"])
-except:
-        pass
-try:
-        page=int(params["page"])
-except:
-        pass
+        
+def MODESWITCHER():
+        params=get_params()
+        url=None
+        name=None
+        mode=None
+        page=None
 
-		
-		
-print "Mode: "+str(mode)
-print "URL: "+str(url)
-print "Name: "+str(name)
-print "Page: "+str(page)
+        # Populate url, name & mode vars, if not, take default "None"
+        try:
+                url=urllib.unquote_plus(params["url"])
+        except:
+                pass
+        try:
+                name=urllib.unquote_plus(params["name"])
+        except:
+                pass
+        try:
+                mode=urllib.unquote_plus(params["mode"])
+        except:
+                pass
+        try:
+                page=int(params["page"])
+        except:
+                pass
 
+        print "Mode: "+str(mode)
+        print "URL: "+str(url)
+        print "Name: "+str(name)
+        print "Page: "+str(page)
 
-# Mode 0 = Default mode (just list categories)
-# Mode getIndex = List content of category
-# Mode getVideo = Open video
-
-if mode==None or url==None or len(url)<1:
-        print ""
-        CATEGORIES()
-
-elif mode=="getSiteCategories":
-        print ""
-        SITE_CATEGORIES()
-		
-elif mode=="getIndex":
-        print ""+url
-        INDEX(url, page)
-       
-elif mode=="getVideo":
-        print ""+url
-        VIDEOLINKS(url,name)
-		
-		
-		
-		
-
+        
+        for case in switch(mode):
+            if case('A'): pass
+            if case(None):
+                print ""
+                CATEGORIES()
+                break
+            if case('getSiteCategories'):
+                SITE_CATEGORIES()
+                break
+            if case('getIndex'):
+                INDEX(url, page)
+                break
+            if case('getVideo'):
+                VIDEOLINKS(url,name)
+                break
+            if case('getSearch'):
+                SEARCH(url)
+                break
+            if case(): # default
+                print ""
+                CATEGORIES()
+                break
 
 
+MODESWITCHER()
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
