@@ -355,6 +355,8 @@ def INDEX(url,page):
 		AllNames = re.split('\'\,\'+', NamesString[0])
 		url = re.sub('[0-9]+/$', '', url)
 		
+		PageNumbers = 1
+		
 		# Page stuff
 		if PageNumbersNormal:
 			PageNumbers = PageNumbersNormal[-1]
@@ -370,9 +372,6 @@ def INDEX(url,page):
 		for number, name in zip(AllIDs, AllNames):
 			addDownLink(name,number,'getVideo','http://cdn.anythumb.com/236x177/' + number + '.jpg')
 
-
-			
-			
 def VIDEOLINKS(url,name):
 		listitem = xbmcgui.ListItem(name)
 		listitem.setInfo('video', {'Title': name, 'Genre': 'Porn'})
@@ -399,10 +398,8 @@ def get_params():
                                
         return param
 
-
-
-
 def addDownLink(name,url,mode,iconimage):
+        name = name.replace("\\", "")
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -410,10 +407,10 @@ def addDownLink(name,url,mode,iconimage):
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
         return ok
 
-
 def addDir(name,url,mode,iconimage,page):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&page="+urllib.quote_plus(page)
         ok=True
+        name = name.replace("\\", "")
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
