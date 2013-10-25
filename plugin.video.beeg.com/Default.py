@@ -401,6 +401,7 @@ def INDEX(url,page):
             addDownLink(name,number,'getVideo','http://cdn.anythumb.com/236x177/' + number + '.jpg')
 
         DIRPAGER(url, link, page)
+        xbmc.executebuiltin("Container.SetViewMode(500)")
  
 def DIRPAGER(url, link, page):
 
