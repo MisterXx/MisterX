@@ -19,6 +19,8 @@ import xbmcplugin,xbmcgui
 
 NAME = 'beeg.com plugin'
 
+
+
 class switch(object):
     def __init__(self, value):
         self.value = value
@@ -401,6 +403,7 @@ def INDEX(url,page):
             addDownLink(name,number,'getVideo','http://cdn.anythumb.com/236x177/' + number + '.jpg')
 
         DIRPAGER(url, link, page)
+        xbmc.executebuiltin("Container.SetViewMode(500)")
  
 def DIRPAGER(url, link, page):
 
