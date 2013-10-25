@@ -1,5 +1,5 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui
-import urlresolver
+import urlresolver, xbmcaddon
 
 #Porn Hub - Blazetamer.
 addon = xbmcaddon.Addon ('plugin.video.pornhub')
