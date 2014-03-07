@@ -1,2 +1,5 @@
+v1.0.5
+- Updated dependencies for Gotham
+
 v1.0.4
 - Added default thumbnail view
