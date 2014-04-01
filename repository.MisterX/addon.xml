@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 	<addon id="repository.MisterX" name="MisterX Repository" version="1.0.9" provider-name="MisterX">
 		<extension point="xbmc.addon.repository" name="MisterX addon repository">
-        	<info compressed="false">https://raw.github.com/rodrigoke/XBMC.repo/master/addons.xml</info>
+        	<info compressed="false">https://raw.github.com/MisterXx/MisterX/master/addons.xml</info>
 
 			<info compressed="false">https://raw.github.com/MisterXx/MisterX/master/addons.xml</info>
 			<checksum>https://raw.github.com/MisterXx/MisterX/master/addons.xml.md5</checksum>
