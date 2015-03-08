@@ -15,7 +15,11 @@
 
 
 import urllib,urllib2,re, os
-import xbmcplugin,xbmcgui
+import xbmcplugin,xbmcgui,xbmcaddon
+addon=xbmcaddon.Addon()
+def getSet(id,d=''): 
+    try: return addon.getSetting(id)
+    except: return d
 
 NAME = 'beeg.com plugin'
 
@@ -433,10 +437,27 @@ def DIRPAGER(url, link, page):
             addDir('Next page (' + str(page+1) + ')', url + str(page+1) + '/', 'getIndex', '', str(page+1))
 
             
+def GetPlayerCore():
+	try:
+		PlayerMethod=getSet("core-player")
+		if   (PlayerMethod=='DVDPLAYER'): PlayerMeth=xbmc.PLAYER_CORE_DVDPLAYER
+		elif (PlayerMethod=='MPLAYER'): PlayerMeth=xbmc.PLAYER_CORE_MPLAYER
+		elif (PlayerMethod=='PAPLAYER'): PlayerMeth=xbmc.PLAYER_CORE_PAPLAYER
+		else: PlayerMeth=xbmc.PLAYER_CORE_AUTO
+	except: PlayerMeth=xbmc.PLAYER_CORE_AUTO
+	return PlayerMeth
+
 def VIDEOLINKS(url,name):
         listitem = xbmcgui.ListItem(name)
         listitem.setInfo('video', {'Title': name, 'Genre': 'Porn'})
-        xbmc.Player().play('http://video.mystreamservice.com/480p/'+url+'.mp4', listitem)
+        VidRes=getSet('vide-res','480p')
+        URL='http://video.beeg.com/speed=9.0/buffer=600/data=pc.US/'+VidRes+'/'+url+'.mp4'
+        xbmc.Player(GetPlayerCore()).play(URL, listitem)
+        #xbmc.Player().play('http://video.mystreamservice.com/480p/'+url+'.mp4', listitem)
+        #http://video.beeg.com/speed=9.0/buffer=600/data=pc.US/720p/3811109.mp4
+        #http://video.beeg.com/speed=9.0/buffer=600/data=pc.US/480p/3811109.mp4
+        #http://video.beeg.com/speed=9.0/buffer=600/data=pc.US/240p/3811109.mp4
+        #
 
 def get_params():
         param=[]
