@@ -452,6 +452,13 @@ def VIDEOLINKS(url,name):
         listitem.setInfo('video', {'Title': name, 'Genre': 'Porn'})
         VidRes=getSet('vide-res','480p')
         URL='http://video.beeg.com/speed=9.0/buffer=600/data=pc.US/'+VidRes+'/'+url+'.mp4'
+        if VidRes != '480p':
+            URLCheck=urllib.urlopen(URL)
+            URLCheck.close()
+            URLCheck=URLCheck.getcode()
+            if URLCheck == 404:
+                VidRes='480p'
+                URL='http://video.beeg.com/speed=9.0/buffer=600/data=pc.US/'+VidRes+'/'+url+'.mp4'
         xbmc.Player(GetPlayerCore()).play(URL, listitem)
         #xbmc.Player().play('http://video.mystreamservice.com/480p/'+url+'.mp4', listitem)
         #http://video.beeg.com/speed=9.0/buffer=600/data=pc.US/720p/3811109.mp4
