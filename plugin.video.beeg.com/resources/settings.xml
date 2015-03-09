@@ -1,0 +1,6 @@
+<settings>
+	<category label="General">
+		<setting id="core-player" type="labelenum" default="AUTO" visible="true" label="Player Core" values="AUTO|DVDPLAYER|MPLAYER|PAPLAYER" />
+		<setting id="vide-res" type="labelenum" default="480p" visible="true" label="Video Resolution" values="720p|480p|240p" />
+	</category>
+</settings>
