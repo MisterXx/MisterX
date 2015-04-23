@@ -1,2 +1,11 @@
+v1.0.4
+Updated dependencies for Gotham
+
+v1.0.3
+Added Default View
+
+v1.0.1
+Quick Fix 
+
 v1.0.0
 Initial Release

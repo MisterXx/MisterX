@@ -1,2 +1,11 @@
+v1.0.7 (Fixes for this version by smokdpi.)
+- Adjustment for videos without a 720p or 240p option.
+
+v1.0.6 (Fixes for this version by TheHighway.)
+- Updated playable url method.
+
+v1.0.5
+- Updated dependencies for Gotham
+
 v1.0.4
-- Added thumbnail view for dirlistings
+- Added default thumbnail view
