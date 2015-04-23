@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-	<addon id="plugin.video.beeg.com" name="beeg.com  (Adult) - Powered by XBMCHUB.COM" version="1.0.5" provider-name="MisterX">
+	<addon id="plugin.video.beeg.com" name="beeg.com  (Adult) - Powered by XBMCHUB.COM" version="1.0.7" provider-name="MisterX">
 		<requires>
 			<import addon="xbmc.python" version="2.1.0"/>
 		</requires>
